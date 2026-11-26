@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Loops: the for loop and range()</title>
+<style>
+:root{--bg:#f6f3ee;--ink:#1d2430;--mut:#5b6572;--card:#fff;--line:#d6d0c4;--acc:#1d4ed8;--glow:#f59e0b;--bad:#b42318;--code:#14202b;--codeink:#e6edf3}
+@media(prefers-color-scheme:dark){:root{--bg:#12161c;--ink:#e8ecf1;--mut:#9ba7b4;--card:#1a212a;--line:#2d3743;--acc:#6ea0ff;--glow:#fbbf24;--bad:#f97066;--code:#0c1117}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Georgia,"Times New Roman",serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:2rem;line-height:1.15;margin:.2em 0}
+h2{font-size:1.15rem;margin:0 0 .5em}
+p{margin:.4em 0;max-width:68ch}
+.sub{color:var(--mut)}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0}
+code,pre,.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+pre{margin:0;background:var(--code);color:var(--codeink);border-radius:8px;padding:8px 0;font-size:15px;overflow-x:auto}
+.ln{display:block;padding:2px 12px;border-left:4px solid transparent;white-space:pre}
+.ln.on{background:rgba(253,230,138,.22);border-left-color:#fde68a}
+.ln i{color:#7d8b97;font-style:normal;margin-right:12px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 0}
+button{font:inherit;font-size:.95rem;padding:7px 14px;border-radius:7px;border:1px solid var(--acc);background:var(--card);color:var(--ink);cursor:pointer}
+button.p{background:var(--acc);color:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid var(--glow);outline-offset:2px}
+input[type=number]{width:64px;font:inherit;padding:5px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+label{font-size:.9rem;color:var(--mut)}
+#track{display:flex;flex-wrap:wrap;gap:10px;padding:26px 6px 8px;min-height:90px}
+.c{position:relative;width:42px;height:42px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700;font-family:ui-monospace,Menlo,monospace;transition:transform .3s,box-shadow .3s,opacity .3s}
+.c.done{opacity:.45}
+.c.now{transform:scale(1.25);box-shadow:0 0 0 5px var(--glow);opacity:1}
+.c.now::before{content:"\25BC";position:absolute;top:-24px;left:50%;transform:translateX(-50%);color:var(--glow);animation:bob .7s ease-in-out infinite alternate}
+.c.stop{background:transparent;border:2px dashed var(--mut);color:var(--mut)}
+@keyframes bob{to{top:-18px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.stat{display:flex;gap:18px;flex-wrap:wrap;font-family:ui-monospace,Menlo,monospace}
+.stat b{color:var(--acc)}
+#con{background:var(--code);color:#9ef0b8;border-radius:8px;padding:8px 12px;min-height:90px;font-size:15px;white-space:pre-wrap}
+#msg{min-height:3em;margin:8px 0 0}
+#err{color:var(--bad);min-height:1.3em;margin:0}
+.q button{margin:4px 6px 4px 0}
+.ok{color:#15803d;font-weight:700}.no{color:var(--bad);font-weight:700}
+.hint{background:var(--bg);border-left:4px solid var(--acc);padding:8px 12px;border-radius:0 6px 6px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Loops in Python</h1>
+<p class="sub">A for loop repeats the same block once for every value in a sequence.</p>
+
+<section>
+<h2>The idea</h2>
+<div class="grid">
+<div>
+<p><code>range(start, stop, step)</code> makes the numbers. The loop variable takes the next value on every repeat, called an iteration.</p>
+<p><code>range(1, 5)</code> gives 1, 2, 3, 4.</p>
+</div>
+<div class="hint"><b>Remember:</b> the stop value is <b>not</b> included. The dashed circle below shows where the range stops.</div>
+</div>
+</section>
+
+<section>
+<h2>Try it: step through a loop</h2>
+<div class="ctl">
+<label>start <input id="a" type="number" value="1"></label>
+<label>stop <input id="b" type="number" value="6"></label>
+<label>step <input id="s" type="number" value="1"></label>
+</div>
+<p id="err"></p>
+<div id="track" aria-label="Range values"></div>
+<div class="grid">
+<div><pre id="code" aria-label="Python code"></pre></div>
+<div>
+<div class="stat"><span>iteration: <b id="it">0</b></span><span>i = <b id="iv">-</b></span></div>
+<div id="con" class="mono" aria-label="Output"></div>
+</div>
+</div>
+<div class="ctl">
+<button class="p" id="next">Next</button>
+<button id="play">Play</button>
+<button id="reset">Reset</button>
+<label>Speed <input id="spd" type="range" min="1" max="10" value="5"></label>
+</div>
+<p id="msg"></p>
+</section>
+
+<section class="q">
+<h2>Quick check</h2>
+<p id="q1t"></p><div id="q1"></div><p id="q1r"></p>
+<p id="q2t"></p><div id="q2"></div><p id="q2r"></p>
+</section>
+</main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var steps=[],vals=[],A=1,B=6,S=1,idx=0,timer=null,CODE=[];
+function build(){
+ A=parseInt($("a").value,10);B=parseInt($("b").value,10);S=parseInt($("s").value,10);
+ var err="";
+ if(isNaN(A)||isNaN(B)||isNaN(S))err="Enter whole numbers for start, stop and step.";
+ else if(S===0)err="ValueError: range() arg 3 must not be zero.";
+ if(err){$("err").textContent=err;return false;}
+ vals=[];
+ for(var v=A;(S>0?v<B:v>B)&&vals.length<20;v+=S)vals.push(v);
+ $("err").textContent=vals.length>=20?"Showing the first 20 values only.":"";
+ CODE=["for i in range("+A+", "+B+", "+S+"):","    print(i)",'print("Done")'];
+ steps=[{line:-1,n:0,cur:-1,out:"",msg:vals.length?"Press Next. Python will give i its first value.":"This range is empty, so the loop body never runs. Press Next."}];
+ var out="";
+ vals.forEach(function(v,k){
+  steps.push({line:0,n:k+1,cur:k,out:out,msg:"Iteration "+(k+1)+": i takes the next value, "+v+"."});
+  out+=v+"\n";
+  steps.push({line:1,n:k+1,cur:k,out:out,msg:"print(i) writes "+v+" to the output."});
+ });
+ steps.push({line:0,n:vals.length,cur:vals.length,out:out,msg:"No values left, so the loop ends. "+B+" is the stop value and is never used."});
+ steps.push({line:2,n:vals.length,cur:vals.length,out:out+"Done\n",msg:"Python continues with the line after the loop. The loop ran "+vals.length+" time"+(vals.length===1?"":"s")+"."});
+ idx=0;return true;
+}
+function draw(){
+ if(!steps.length)return;
+ var s=steps[idx];
+ $("code").innerHTML=CODE.map(function(t,i){return '<span class="ln'+(i===s.line?' on':'')+'"><i>'+(i+1)+'</i>'+t.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</span>'}).join("");
+ var h="";
+ vals.forEach(function(v,k){h+='<div class="c'+(k===s.cur?' now':(k<s.cur?' done':''))+'">'+v+'</div>';});
+ h+='<div class="c stop'+(s.cur===vals.length?' now':'')+'" title="stop value, not included">'+B+'</div>';
+ $("track").innerHTML=h;
+ $("it").textContent=s.n;
+ $("iv").textContent=(s.cur>=0&&s.cur<vals.length)?vals[s.cur]:"-";
+ $("con").textContent=s.out;
+ $("msg").textContent=s.msg;
+}
+function stop(){if(timer){clearInterval(timer);timer=null;}$("play").textContent="Play";}
+function next(){if(idx<steps.length-1){idx++;draw();}else stop();}
+function delay(){return 1800-$("spd").value*160;}
+function play(){
+ if(timer){stop();return;}
+ if(!steps.length)return;
+ if(idx>=steps.length-1){idx=0;draw();}
+ $("play").textContent="Pause";
+ timer=setInterval(function(){if(idx>=steps.length-1)stop();else next();},delay());
+}
+function rebuild(){stop();if(build())draw();else{steps=[];$("track").innerHTML="";$("code").innerHTML="";$("con").textContent="";$("msg").textContent="";}}
+$("next").onclick=function(){stop();next();};
+$("play").onclick=play;
+$("reset").onclick=function(){stop();idx=0;draw();};
+$("spd").oninput=function(){if(timer){stop();play();}};
+["a","b","s"].forEach(function(i){$(i).onchange=rebuild;});
+rebuild();
+
+var quiz=[
+ {q:"1. How many times does for i in range(2, 8) run?",o:["5","6","7"],a:1,e:"It gives 2, 3, 4, 5, 6, 7. That is 6 values, and 8 is not included."},
+ {q:"2. What does range(1, 5) produce?",o:["1, 2, 3, 4","1, 2, 3, 4, 5","0, 1, 2, 3, 4"],a:0,e:"The stop value 5 is not included."}
+];
+quiz.forEach(function(k,n){
+ var i=n+1;
+ $("q"+i+"t").textContent=k.q;
+ k.o.forEach(function(t,j){
+  var b=document.createElement("button");b.textContent=t;
+  b.onclick=function(){var r=$("q"+i+"r");
+   if(j===k.a){r.className="ok";r.textContent="Correct. "+k.e;}
+   else{r.className="no";r.textContent="Not quite. Try again.";}};
+  $("q"+i).appendChild(b);
+ });
+});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Variables: names that point to values</title>
+<style>
+:root{--bg:#f2f5f1;--ink:#15202b;--mut:#51606e;--card:#fff;--line:#c9d3cc;--acc:#0f766e;--hi:#fde68a;--bad:#b42318;--code:#14232e;--codeink:#e6edf3;--x:#2563eb;--y:#c2410c}
+@media(prefers-color-scheme:dark){:root{--bg:#10171c;--ink:#e6edf3;--mut:#9aa8b5;--card:#18222a;--line:#2c3a45;--acc:#2dd4bf;--hi:#6b5b12;--bad:#f97066;--code:#0b1217;--x:#60a5fa;--y:#fb923c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Georgia,"Times New Roman",serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:2rem;line-height:1.15;margin:.2em 0}
+h2{font-size:1.15rem;margin:0 0 .5em}
+p{margin:.4em 0;max-width:68ch}
+.sub{color:var(--mut)}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0}
+code,pre,.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+pre{margin:0;background:var(--code);color:var(--codeink);border-radius:8px;padding:8px 0;font-size:15px;overflow-x:auto}
+.ln{display:block;padding:2px 12px;border-left:4px solid transparent;white-space:pre}
+.ln.on{background:rgba(253,230,138,.22);border-left-color:#fde68a}
+.ln i{color:#7d8b97;font-style:normal;margin-right:12px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:inherit;font-size:.95rem;padding:7px 14px;border-radius:7px;border:1px solid var(--acc);background:var(--card);color:var(--ink);cursor:pointer}
+button.p{background:var(--acc);color:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid var(--x);outline-offset:2px}
+input[type=number]{width:70px;font:inherit;padding:5px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+label{font-size:.9rem;color:var(--mut)}
+#mem{display:flex;flex-wrap:wrap;gap:12px;min-height:150px;align-items:flex-start;border:2px dashed var(--line);border-radius:8px;padding:12px}
+.box{width:110px;border:2px solid var(--ink);border-radius:8px;text-align:center;padding:8px 6px;background:var(--card);animation:drop .45s ease-out;transition:opacity .6s,transform .6s}
+.box b{font-size:1.7rem;display:block}
+.box small{color:var(--mut)}
+.box.orph{opacity:.25;transform:scale(.9);border-style:dashed}
+.chips{display:flex;gap:4px;justify-content:center;min-height:28px;margin-bottom:4px}
+.chip{font-family:ui-monospace,Menlo,monospace;font-weight:700;color:#fff;padding:1px 10px;border-radius:12px;animation:pop .5s ease-out}
+.chip.x{background:var(--x)}.chip.y{background:var(--y)}
+@keyframes drop{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.3)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#con{background:var(--code);color:#9ef0b8;border-radius:8px;padding:8px 12px;min-height:44px;font-size:15px}
+#msg{min-height:3em;margin:8px 0 0}
+.q button{margin:4px 6px 4px 0}
+.ok{color:var(--acc);font-weight:700}.no{color:var(--bad);font-weight:700}
+.hint{background:var(--bg);border-left:4px solid var(--acc);padding:8px 12px;border-radius:0 6px 6px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Variables and Constants</h1>
+<p class="sub">A variable is not a box that holds a value. It is a name tag that points to a value stored in memory.</p>
+
+<section>
+<h2>The idea</h2>
+<div class="grid">
+<div>
+<p><code>x = 10</code> makes the name <b>x</b> point to the value 10.</p>
+<p><code>y = x</code> does not copy anything. Both names now point to the same value.</p>
+<p>Reassigning, like <code>x = 20</code>, moves only the name tag x to a new value. y stays where it was.</p>
+</div>
+<div class="hint"><b>Constants:</b> Python has no real constants. By convention, names in UPPERCASE such as <code>PI = 3.14</code> mean “please do not change this.”</div>
+</div>
+</section>
+
+<section>
+<h2>Try it: watch the name tags move</h2>
+<div class="ctl">
+<label>x starts at <input id="a" type="number" value="10"></label>
+<label>then x becomes <input id="b" type="number" value="20"></label>
+</div>
+<div class="grid">
+<div><pre id="code" aria-label="Python code"></pre></div>
+<div>
+<div id="mem" aria-live="polite"></div>
+<p class="sub" style="font-size:.85rem;margin-top:6px">Memory. Faded dashed boxes have no name pointing to them.</p>
+</div>
+</div>
+<div class="ctl">
+<button class="p" id="next">Next</button>
+<button id="play">Play</button>
+<button id="reset">Reset</button>
+<label>Speed <input id="spd" type="range" min="1" max="10" value="5"></label>
+<span id="count" class="sub"></span>
+</div>
+<div id="con" class="mono" aria-label="Output"></div>
+<p id="msg"></p>
+</section>
+
+<section class="q">
+<h2>Quick check</h2>
+<p id="q1t"></p><div id="q1"></div><p id="q1r"></p>
+<p id="q2t"></p><div id="q2"></div><p id="q2r"></p>
+</section>
+</main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var steps=[],idx=0,timer=null;
+var CODE=["x = {a}","y = x","x = {b}","print(x, y)"];
+function build(){
+ var a=parseInt($("a").value,10),b=parseInt($("b").value,10);
+ if(isNaN(a))a=10; if(isNaN(b))b=20;
+ var same=(a===b); // still separate box in this simple model
+ steps=[
+ {line:-1,boxes:[],vars:{},out:"",msg:"Press Next to run the first line."},
+ {line:0,boxes:[{id:"A",v:a}],vars:{x:"A"},out:"",msg:"x = "+a+": a box holding "+a+" is created and the name x points to it."},
+ {line:1,boxes:[{id:"A",v:a}],vars:{x:"A",y:"A"},out:"",msg:"y = x: no copy is made. y points to the same box as x."},
+ {line:2,boxes:[{id:"A",v:a},{id:"B",v:b}],vars:{x:"B",y:"A"},out:"",msg:"x = "+b+": the tag x moves to a new box. y still points to "+a+"."},
+ {line:3,boxes:[{id:"A",v:a},{id:"B",v:b}],vars:{x:"B",y:"A"},out:b+" "+a,msg:"print(x, y) shows "+b+" and "+a+". Changing x did not change y."}
+ ];
+ CODE[0]="x = "+a;CODE[2]="x = "+b;
+ draw();
+}
+function draw(){
+ var s=steps[idx];
+ $("code").innerHTML=CODE.map(function(t,i){return '<span class="ln'+(i===s.line?' on':'')+'"><i>'+(i+1)+'</i>'+t+'</span>'}).join("");
+ var h="";
+ s.boxes.forEach(function(bx){
+  var names=Object.keys(s.vars).filter(function(n){return s.vars[n]===bx.id});
+  h+='<div class="box'+(names.length?'':' orph')+'"><div class="chips">'+names.map(function(n){return '<span class="chip '+n+'">'+n+'</span>'}).join("")+'</div><b>'+bx.v+'</b><small>int</small></div>';
+ });
+ $("mem").innerHTML=h;
+ $("con").textContent=s.out?"> "+s.out:"";
+ $("msg").textContent=s.msg;
+ $("count").textContent="Step "+idx+" of "+(steps.length-1);
+}
+function next(){ if(idx<steps.length-1){idx++;draw();} else stop(); }
+function stop(){ if(timer){clearInterval(timer);timer=null;} $("play").textContent="Play"; }
+function delay(){ return 2100-$("spd").value*190; }
+function play(){
+ if(timer){stop();return;}
+ if(idx>=steps.length-1){idx=0;draw();}
+ $("play").textContent="Pause";
+ timer=setInterval(function(){ if(idx>=steps.length-1){stop();} else next(); },delay());
+}
+$("next").onclick=function(){stop();next();};
+$("play").onclick=play;
+$("reset").onclick=function(){stop();idx=0;draw();};
+$("spd").oninput=function(){ if(timer){stop();play();} };
+$("a").onchange=$("b").onchange=function(){stop();idx=0;build();};
+build();
+
+var quiz=[
+ {q:"1. After x = 10, y = x, x = 20, what is y?",o:["10","20","Error"],a:0,e:"y still points to the value 10."},
+ {q:"2. What does y = x do?",o:["Copies the value into a new box","Makes y point to the same value as x","Deletes x"],a:1,e:"Both names point to the same value."}
+];
+quiz.forEach(function(k,n){
+ var i=n+1;
+ $("q"+i+"t").textContent=k.q;
+ k.o.forEach(function(t,j){
+  var b=document.createElement("button");b.textContent=t;
+  b.onclick=function(){var r=$("q"+i+"r");
+   if(j===k.a){r.className="ok";r.textContent="Correct. "+k.e;}
+   else{r.className="no";r.textContent="Not quite. Try again.";}};
+  $("q"+i).appendChild(b);
+ });
+});
+})();
+</script>
+</body>
+</html>
